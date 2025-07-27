@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PojavTierList</title>
+  <link rel="icon" href="pojav.png" type="image/png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #111, #1c1c1c);
+      color: #fff;
+    }
+    header {
+      background-color: #1f1f1f;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #2a2a2a;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    header h1 {
+      font-size: 1.7rem;
+      color: gold;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    nav#mode-nav {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    nav#mode-nav button {
+      background-color: #2a2a2a;
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    nav#mode-nav button:hover {
+      background-color: #444;
+      transform: scale(1.05);
+    }
+    main#leaderboard-container {
+      padding: 2rem;
+      display: grid;
+      gap: 1.5rem;
+    }
+    .card {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid #333;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+    }
+    .card h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.3rem;
+      color: #ffd700;
+    }
+    .card p {
+      margin: 0.3rem 0;
+    }
+    .tier-badges {
+      margin-top: 0.5rem;
+    }
+    .tier-badges span {
+      background-color: #ffd700;
+      color: #000;
+      padding: 0.3rem 0.8rem;
+      border-radius: 50px;
+      margin-left: 0.3rem;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    footer {
+      background-color: #1f1f1f;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      border-top: 2px solid #2a2a2a;
+    }
+    .fa-cube { color: #8ecae6; }
+    .fa-heart { color: #e63946; }
+    .fa-flask { color: #ffb703; }
+    .fa-fire { color: #fb8500; }
+    .fa-tree { color: #90be6d; }
+    .fa-sword { color: #f72585; }
+    .fa-hammer { color: #b5179e; }
+    .fa-gavel { color: #7209b7; }
+    .fa-trophy { color: #ffd700; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><img src="pojav.png" alt="Logo" width="32" height="32"/> PojavTierList</h1>
+    <nav id="mode-nav"></nav>
+  </header>
+  <main id="leaderboard-container"></main>
+  <footer>© PojavTiers • Made By SUPRAMK9 • Created with ❤️</footer>
+
+  <script>
+    const modeIcons = {
+      "Overall": "fas fa-trophy",
+      "Vanilla": "fas fa-cube",
+      "UHC": "fas fa-heart",
+      "Pot": "fas fa-flask",
+      "NethOP": "fas fa-fire",
+      "SMP": "fas fa-tree",
+      "Sword": "fas fa-sword",
+      "Axe": "fas fa-hammer",
+      "Mace": "fas fa-gavel"
+    };
+
+    const modes = Object.keys(modeIcons);
+
+    const players = [
+      {
+        name: "SUPRAMK9",
+        rank: "Combat Grandmaster",
+        points: 420,
+        region: "NA",
+        tiers: { Sword: "LT3", NethOP: "LT3", Overall: "LT3 (Sword, NethOP)" }
+      },
+      {
+        name: "MC_FF_Gamer0",
+        rank: "PvP God",
+        points: 380,
+        region: "EU",
+        tiers: { NethOP: "HT3", Overall: "HT3 (NethOP)" }
+      },
+      {
+        name: "PhyscoSweep",
+        rank: "NethPot Demon",
+        points: 410,
+        region: "Asia",
+        tiers: { NethOP: "HT3", Overall: "HT3 (NethOP)" }
+      }
+    ];
+
+    function createNav() {
+      const nav = document.getElementById("mode-nav");
+      modes.forEach(mode => {
+        const btn = document.createElement("button");
+        btn.innerHTML = `<i class='${modeIcons[mode]}'></i> ${mode}`;
+        btn.onclick = () => render(mode);
+        nav.appendChild(btn);
+      });
+    }
+
+    function render(mode) {
+      const container = document.getElementById("leaderboard-container");
+      container.innerHTML = "";
+
+      const tierOrder = ["HT1", "LT1", "HT2", "LT2", "HT3", "LT3", "HT4", "LT4", "HT5", "LT5"];
+      const filtered = players.filter(p => p.tiers[mode]);
+      filtered.sort((a, b) => {
+        const getPureTier = val => val.includes("(") ? val.split(" ")[0] : val;
+        return tierOrder.indexOf(getPureTier(a.tiers[mode])) - tierOrder.indexOf(getPureTier(b.tiers[mode]));
+      });
+
+      filtered.forEach((p, index) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        const tierText = p.tiers[mode];
+        let badgeInner = `<span>${tierText}</span>`;
+
+        if (mode === "Overall") {
+          const match = tierText.match(/(HT\d|LT\d) \(([^)]+)\)/);
+          if (match) {
+            const [_, tier, games] = match;
+            const gameModes = games.split(", ");
+            badgeInner = `<span>${tier} (${games})</span>`;
+          }
+        }
+
+        card.innerHTML = `
+          <h3>#${index + 1} <i class="fas fa-user-astronaut"></i> ${p.name}</h3>
+          <p><i class="fas fa-medal"></i> ${p.rank} (${p.points} pts)</p>
+          <p><i class="fas fa-globe"></i> Region: ${p.region}</p>
+          <div class="tier-badges"><strong>${mode}:</strong> ${badgeInner}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    createNav();
+    render("Overall");
+  </script>
+</body>
+</html>
