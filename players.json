@@ -6,5 +6,12 @@
       "Sword": "LT3",
       "NethOP": "LT3"
     }
+  },
+  {
+    "name": "PhyscoSweep",
+    "region": "IN",
+    "tiers": {
+      "NethOP": "HT3"
+    }
   }
 ]
